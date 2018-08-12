@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Propeller Assessment | Cátia Costa</title>
+    <link href="assets/scss/main.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,900i" rel="stylesheet">
+</head>
+<body>
+   <section class="accordion">
+   </section>
+   
+   <script>
+    var parent = document.querySelector(".accordion"); 
+    init();
+    function loadJSON(callback) {   
+        var xhr = new XMLHttpRequest();
+            xhr.overrideMimeType("application/json");
+        xhr.open('GET', 'http://design.propcom.co.uk/buildtest/accordion-data.json', true); 
+        xhr.onreadystatechange = function () {
+              if (xhr.readyState == 4 && xhr.status == "200") {
+                callback(xhr.responseText);
+              }
+        };
+        xhr.send(null);  
+    }
+    function init() {
+     loadJSON(function(response) {
+        var data = JSON.parse(response);
+        for( var i = 0; i < data.blocks.length; ++i ) {
+            var actual_block = data.blocks[i];
+            newItem(actual_block.heading, actual_block.content); 
+        }
+        activateFirstItem();
+        addInteractivity();
+     });
+    }  
+    function newItem(title, text){
+       var html= '<div class="accordion__item">';
+       html   += '  <div class="accordion__header">';
+       html   += '      <p class="accordion__title">'+title+'</p>';
+       html   += '      <img src="assets/img/up-thin-chevron.svg" class="accordion__icon"/>';
+       html   += '  </div>';
+       html   += '  <div class="accordion__body">';
+       html   += '      <p class="accordion__text">'+text+'</p>';
+       html   += '  </div>';
+       html   += '</div>';
+       parent.innerHTML += html;
+    }
+    function activateFirstItem(){
+       var first= document.querySelector('.accordion__item:first-child');
+       toggleClasses(first);
+    }
+    function addInteractivity(){ 
+        //Just let one accordion item to be open at the same time
+        const items = Array.from(document.querySelectorAll('.accordion__item'));
+        items.forEach(function(item){
+          item.addEventListener("click", function(){
+            //comment the if below to: let all accordion items to be open/active at the same time
+            if (item.className.indexOf("accordion__item--active") < 0){
+                const actives= Array.from(document.querySelectorAll('.accordion__item--active'));
+                actives.forEach(function(active){
+                    active.classList.remove("accordion__item--active");
+                    active.children[0].classList.remove("accordion__header--active");
+                    active.children[1].classList.remove("accordion__body--active");
+                    active.children[0].children[1].classList.remove("accordion__icon--active");
+                });
+            }
+            toggleClasses(item);
+          });
+        });
+    }
+    
+    function toggleClasses(element){
+        element.classList.toggle("accordion__item--active");
+        element.children[0].classList.toggle("accordion__header--active");
+        element.children[1].classList.toggle("accordion__body--active");
+        element.children[0].children[1].classList.toggle("accordion__icon--active");
+    } 
+    </script>
+</body>
+</html>
+    
