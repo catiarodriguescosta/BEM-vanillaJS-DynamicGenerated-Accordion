@@ -22,7 +22,7 @@
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "https://design.propcom.co.uk/buildtest/accordion-data.json", true);
     xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4) {
+      if (xhr.readyState == 4 && xhr.status == 200) {
         var data = JSON.parse(xhr.responseText);
         for( var i = 0; i < data.blocks.length; ++i ) {
             var actual_block = data.blocks[i];
